@@ -40,7 +40,7 @@ def mlflow_configure():
     # Parse the ML Flow TAGs
     print(f"Model Experiment ID: {_experiment}")
     try:
-        tags = json.loads(_tags.replace(r"\\", ""))
+        tags = json.loads(f'"{_tags}"')
     except Exception as e:
         print(f"Invalid TAGs defined: {_tags}")
 
