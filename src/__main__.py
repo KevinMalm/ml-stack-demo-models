@@ -9,10 +9,6 @@ from sklearn.metrics import accuracy_score
 
 
 def main():
-    if mlflow.active_run():
-        print("Found active run, ending it.")
-        mlflow.end_run()
-
     with mlflow.start_run():
         mlflow_configure()
         # Load data
@@ -37,13 +33,15 @@ def mlflow_configure():
     # Load Env Vars
     _experiment = os.getenv("MLFLOW_EXPERIMENT_NAME")
     _tags = os.getenv("MLFLOW_EXPERIMENT_TAGS")
+    _url = os.getenv("MLFLOW_URL")
     # Validate
-    if _experiment is None or _tags is None:
+    if _experiment is None or _tags is None or _url is None:
         raise Exception("Environment has not been setup correctly.")
-    # Parse the ML Flow TAGs
-    print(f"Model Experiment ID: {_experiment}")
-    tags = json.loads(_tags.encode("utf-8").decode("unicode_escape"))
 
+    # Parse the ML Flow TAGs
+    tags = json.loads(_tags.encode("utf-8").decode("unicode_escape"))
+    # Set the ML Flow URL
+    mlflow.set_tracking_uri(_url)
     # Set the Experiment name
     mlflow.set_experiment(_experiment)
     # Set the Experiment tags
