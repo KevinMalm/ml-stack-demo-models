@@ -38,8 +38,11 @@ def mlflow_configure():
     if _experiment is None or _tags is None:
         raise Exception("Environment has not been setup correctly.")
     # Parse the ML Flow TAGs
-    print(_tags)
-    tags = json.loads(_tags.replace(r"\\", ""))
+    print(f"Model Experiment ID: {_experiment}")
+    try:
+        tags = json.loads(_tags.replace(r"\\", ""))
+    except Exception as e:
+        print(f"Invalid TAGs defined: {_tags}")
 
     # Set the Experiment name
     mlflow.set_experiment(_experiment)
