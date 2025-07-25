@@ -40,7 +40,7 @@ def mlflow_configure():
     # Parse the ML Flow TAGs
     print(f"Model Experiment ID: {_experiment}")
     try:
-        tags = json.loads(f'"{_tags}"')
+        tags = json.loads(_tags.encode("utf-8").decode("unicode_escape"))
     except Exception as e:
         print(f"Invalid TAGs defined: {_tags}")
 
