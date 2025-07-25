@@ -1,13 +1,33 @@
 import os
 import mlflow
 import json
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 
 def main():
     mlflow_configure()
 
     with mlflow.start_run():
-        pass
+        # Load data
+        iris = load_iris()
+        X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target)
+
+        # Train model
+        clf = RandomForestClassifier()
+        clf.fit(X_train, y_train)
+        preds = clf.predict(X_test)
+        acc = accuracy_score(y_test, preds)
+
+        # Log parameters, metrics, and model
+        mlflow.log_param("model_type", "RandomForest")
+        mlflow.log_metric("accuracy", acc)
+        mlflow.sklearn.log_model(clf, "model")
+
+        print(f"Run complete. Accuracy: {acc}")
 
 
 def mlflow_configure():
