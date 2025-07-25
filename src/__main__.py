@@ -9,8 +9,8 @@ from sklearn.metrics import accuracy_score
 
 
 def main():
-    with mlflow.start_run():
-        mlflow_configure()
+    (run, tags) = mlflow_configure()
+    with mlflow.start_run(run_name=run, tags=tags):
         # Load data
         iris = load_iris()
         X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target)
@@ -42,11 +42,7 @@ def mlflow_configure():
     tags = json.loads(_tags.encode("utf-8").decode("unicode_escape"))
     # Set the ML Flow URL
     mlflow.set_tracking_uri(_url)
-    # Set the Experiment name
-    mlflow.set_experiment(_experiment)
-    # Set the Experiment tags
-    for x in tags:
-        mlflow.set_tag(x["key"], x["value"])
+    return _experiment, {x["key"]: x["value"] for x in tags}
 
 
 if __name__ == "__main__":
