@@ -9,9 +9,12 @@ from sklearn.metrics import accuracy_score
 
 
 def main():
-    mlflow_configure()
+    if mlflow.active_run():
+        print("Found active run, ending it.")
+        mlflow.end_run()
 
     with mlflow.start_run():
+        mlflow_configure()
         # Load data
         iris = load_iris()
         X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target)
@@ -39,10 +42,7 @@ def mlflow_configure():
         raise Exception("Environment has not been setup correctly.")
     # Parse the ML Flow TAGs
     print(f"Model Experiment ID: {_experiment}")
-    try:
-        tags = json.loads(_tags.encode("utf-8").decode("unicode_escape"))
-    except Exception as e:
-        print(f"Invalid TAGs defined: {_tags}")
+    tags = json.loads(_tags.encode("utf-8").decode("unicode_escape"))
 
     # Set the Experiment name
     mlflow.set_experiment(_experiment)
